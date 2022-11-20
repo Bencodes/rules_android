@@ -14,6 +14,8 @@
 
 """Implementation."""
 
+load("@rules_java//java/common:java_common.bzl", "java_common")
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load(
     "//rules:acls.bzl",
     _acls = "acls",
@@ -40,8 +42,6 @@ load(
     _utils = "utils",
 )
 load("//rules:visibility.bzl", "PROJECT_VISIBILITY")
-load("@rules_java//java/common:java_common.bzl", "java_common")
-load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 
 visibility(PROJECT_VISIBILITY)
 
@@ -160,6 +160,7 @@ def _process_resources(
         deps = ctx.attr.deps,
         exports = ctx.attr.exports,
         exports_manifest = getattr(ctx.attr, "exports_manifest", True),
+        namespaced_r_class = False,
 
         # Tool and Processing related inputs
         aapt = _get_android_toolchain(ctx).aapt2.files_to_run,
@@ -180,7 +181,6 @@ def _process_resources(
 <manifest package="%s">
 </manifest>
 """ % package)
-
 
     return struct(**resources_ctx)
 
