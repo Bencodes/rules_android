@@ -238,7 +238,7 @@ public class ZipFilterActionTest {
             "--outputMode", "DONT_CARE",
             "--checkHashMismatch", "IGNORE");
     thrown.expect(ZipException.class);
-    thrown.expectMessage("zip file is empty");
+    thrown.expectMessage("Zip file 'filter1' is malformed");
     ZipFilterAction.run(args.toArray(new String[0]));
   }
 

@@ -27,6 +27,8 @@ import com.google.devtools.build.android.Converters.CompatPathConverter;
 import com.google.devtools.build.android.r8.CompatDexBuilder;
 import com.google.devtools.build.android.r8.Constants;
 import com.google.devtools.build.android.r8.Desugar;
+import com.google.devtools.build.zip.ZipFileEntry;
+import com.google.devtools.build.zip.ZipReader;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,7 +39,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -107,10 +108,8 @@ final class DesugarDexShardingAction {
   private DesugarDexShardingAction() {}
 
   private static boolean hasCode(Path in) throws IOException {
-    try (ZipFile zip = new ZipFile(in.toFile())) {
-      Enumeration<? extends ZipEntry> entries = zip.entries();
-      while (entries.hasMoreElements()) {
-        ZipEntry entry = entries.nextElement();
+    try (ZipReader zip = new ZipReader(in.toFile())) {
+      for (ZipFileEntry entry : zip.entries()) {
         if (entry.getName().endsWith(".class") || entry.getName().endsWith(".dex")) {
           return true;
         }
