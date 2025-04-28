@@ -41,7 +41,6 @@ public class AndroidResourceMerger {
       Path symbolsOut,
       AndroidCompiledDataDeserializer deserializer,
       boolean throwOnResourceConflict,
-      boolean logWarningOnResourceConflict,
       ExecutorServiceCloser executorService)
       throws IOException {
     AndroidDataMerger merger =
@@ -54,8 +53,7 @@ public class AndroidResourceMerger {
             primary,
             manifest,
             packageType.equals(VariantTypeImpl.BASE_APK),
-            throwOnResourceConflict,
-            logWarningOnResourceConflict);
+            throwOnResourceConflict);
     AndroidDataSerializer serializer = AndroidDataSerializer.create();
     merged.serializeTo(serializer);
     serializer.flushTo(symbolsOut);
@@ -98,8 +96,7 @@ public class AndroidResourceMerger {
       final VariantTypeImpl type,
       @Nullable final Path symbolsOut,
       final List<String> filteredResources,
-      boolean throwOnResourceConflict,
-      boolean logWarningOnResourceConflict) {
+      boolean throwOnResourceConflict) {
     try (ExecutorServiceCloser executorService = ExecutorServiceCloser.createWithFixedPoolOf(15)) {
       final ParsedAndroidData parsedPrimary = ParsedAndroidData.from(primary);
       return writeMergedData(
@@ -117,7 +114,6 @@ public class AndroidResourceMerger {
               type != VariantTypeImpl.LIBRARY,
               AndroidParsedDataDeserializer.withFilteredResources(filteredResources),
               throwOnResourceConflict,
-              logWarningOnResourceConflict,
               ContentComparingChecker.create()));
     } catch (IOException e) {
       throw MergingException.wrapException(e);
@@ -171,7 +167,6 @@ public class AndroidResourceMerger {
       boolean allowPrimaryOverrideAll,
       AndroidDataDeserializer deserializer,
       boolean throwOnResourceConflict,
-      boolean logWarningOnResourceConflict,
       SourceChecker checker) {
     Stopwatch timer = Stopwatch.createStarted();
     // TODO(b/74333698): Always check the contents of conflicting resources
@@ -184,8 +179,7 @@ public class AndroidResourceMerger {
           primary,
           primaryManifest,
           allowPrimaryOverrideAll,
-          throwOnResourceConflict,
-          logWarningOnResourceConflict);
+          throwOnResourceConflict);
     } finally {
       logger.fine(String.format("merge finished in %sms", timer.elapsed(TimeUnit.MILLISECONDS)));
     }
@@ -203,7 +197,6 @@ public class AndroidResourceMerger {
       @Nullable final AndroidResourceClassWriter rclassWriter,
       @Nullable PlaceholderRTxtWriter rTxtWriter,
       boolean throwOnResourceConflict,
-      boolean logWarningOnResourceConflict,
       ListeningExecutorService executorService) {
     final ParsedAndroidData.Builder primaryBuilder = ParsedAndroidData.Builder.newBuilder();
     final AndroidDataDeserializer deserializer =
@@ -223,7 +216,6 @@ public class AndroidResourceMerger {
               false,
               deserializer,
               throwOnResourceConflict,
-              logWarningOnResourceConflict,
               AndroidDataMerger.NoopSourceChecker.create());
       timer.reset().start();
       merged.writeResourceClass(rclassWriter);

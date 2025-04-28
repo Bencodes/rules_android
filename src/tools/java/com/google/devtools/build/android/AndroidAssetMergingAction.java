@@ -98,13 +98,6 @@ public class AndroidAssetMergingAction extends AbstractBusyBoxAction {
         description =
             "If passed, asset merge conflicts will be treated as errors instead of warnings")
     public boolean throwOnAssetConflict = true;
-
-    @Parameter(
-        names = "--logWarningOnResourceConflict",
-        arity = 1,
-        description =
-            "If passed, asset merge conflicts will be treated as errors instead of warnings")
-    public boolean logWarningOnResourceConflict;
   }
 
   @Override
@@ -131,7 +124,6 @@ public class AndroidAssetMergingAction extends AbstractBusyBoxAction {
             /* allowPrimaryOverrideAll = */ false,
             deserializer,
             options.throwOnAssetConflict,
-            options.logWarningOnResourceConflict,
             ContentComparingChecker.create());
 
     logCompletion("Merging");
