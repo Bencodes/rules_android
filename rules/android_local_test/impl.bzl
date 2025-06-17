@@ -122,7 +122,6 @@ def _process_resources(ctx, java_package, manifest_ctx, **_unused_sub_ctxs):
 
 def _process_jvm(ctx, resources_ctx, **_unused_sub_ctxs):
     deps = (
-        ctx.attr._implicit_classpath +
         ctx.attr.deps +
         [get_android_toolchain(ctx).testsupport]
     )
