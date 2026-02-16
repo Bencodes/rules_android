@@ -13,7 +13,7 @@
 # limitations under the License.
 """R8 processor steps for android_binary."""
 
-load("//providers:providers.bzl", "AndroidDexInfo", "AndroidOptimizationInfo", "AndroidPreDexJarInfo")
+load("//providers:providers.bzl", "AndroidDexInfo", "AndroidPreDexJarInfo", "ProguardMappingInfo", "AndroidOptimizationInfo")
 load("//rules:acls.bzl", "acls")
 load("//rules:android_neverlink_aspect.bzl", "StarlarkAndroidNeverlinkInfo")
 load("//rules:common.bzl", "common")
@@ -192,6 +192,7 @@ def process_r8(ctx, validation_ctx, jvm_ctx, packaged_resources_ctx, build_info_
                 android_dex_info,
                 AndroidPreDexJarInfo(pre_dex_jar = deploy_jar),
                 AndroidOptimizationInfo(r8_optimization_info = build_metadata_output),
+                ProguardMappingInfo(proguard_mapping = proguard_mappings_output_file),
             ],
         ),
     )
