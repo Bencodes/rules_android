@@ -468,7 +468,11 @@ def _run(
 
     # Set reasonable max heap default. Required to prevent runaway memory usage.
     # Can still be overridden by callers of this method.
-    jvm_flags = ["-Xms3G", "-Xmx3G", "-XX:+ExitOnOutOfMemoryError"] + jvm_flags
+    #
+    # --sun-misc-unsafe-memory-access=allow silences the JDK 24+ (JEP 498) warning emitted the first
+    # time protobuf_java's UnsafeUtil calls sun.misc.Unsafe::arrayBaseOffset. The busybox tools bundle
+    # protobuf and are launched here as `java ... -jar`, so this is the only place the flag reaches them.
+    jvm_flags = ["-Xms3G", "-Xmx3G", "-XX:+ExitOnOutOfMemoryError", "--sun-misc-unsafe-memory-access=allow"] + jvm_flags
 
     # executable should be a File or a FilesToRunProvider
     jar = args.get("executable")
